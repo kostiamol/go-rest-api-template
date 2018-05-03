@@ -1,4 +1,4 @@
-package main
+package svc
 
 // Route is the model for the router setup
 type Route struct {

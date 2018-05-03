@@ -1,8 +1,10 @@
-package main
+package svc
 
 import (
 	"log"
 	"net/http"
+
+	"github.com/kostiamol/go-rest-api-template/entities"
 
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
@@ -23,7 +25,7 @@ func StartServer(ctx AppContext) {
 	}
 	// security
 	var isDevelopment = false
-	if ctx.Env == local {
+	if ctx.Env == entities.Local {
 		isDevelopment = true
 	}
 	secureMiddleware := secure.New(secure.Options{
@@ -38,7 +40,7 @@ func StartServer(ctx AppContext) {
 	n.Use(negroni.HandlerFunc(secureMiddleware.HandlerFuncWithNext))
 	n.UseHandler(router)
 	log.Println("===> Starting app (v" + ctx.Version + ") on port " + ctx.Port + " in " + ctx.Env + " mode.")
-	if ctx.Env == local {
+	if ctx.Env == entities.Local {
 		n.Run("localhost:" + ctx.Port)
 	} else {
 		n.Run(":" + ctx.Port)

@@ -1,4 +1,4 @@
-package main
+package svc
 
 import (
 	"encoding/json"
@@ -7,9 +7,21 @@ import (
 	"strings"
 	"time"
 
+	"github.com/kostiamol/go-rest-api-template/entities"
+
+	"github.com/kostiamol/go-rest-api-template/storage"
 	"github.com/palantir/stacktrace"
 	"github.com/unrolled/render"
 )
+
+// Storager defines all the database operations
+type Storager interface {
+	ListUsers() ([]entities.User, error)
+	GetUser(i int) (entities.User, error)
+	AddUser(u entities.User) (entities.User, error)
+	UpdateUser(u entities.User) (entities.User, error)
+	DeleteUser(i int) error
+}
 
 // AppContext holds application configuration data
 type AppContext struct {
@@ -17,7 +29,7 @@ type AppContext struct {
 	Version string
 	Env     string
 	Port    string
-	DB      DataStorer
+	DB      Storager
 }
 
 // Healthcheck will store information about its name and version
@@ -42,7 +54,7 @@ func CreateContextForTestSetup() AppContext {
 	ctx := AppContext{
 		Render:  render.New(),
 		Version: testVersion,
-		Env:     local,
+		Env:     entities.Local,
 		Port:    "3001",
 		DB:      db,
 	}
@@ -50,18 +62,18 @@ func CreateContextForTestSetup() AppContext {
 }
 
 // CreateMockDatabase initialises a database for test purposes
-func CreateMockDatabase() *MockDB {
-	list := make(map[int]User)
+func CreateMockDatabase() *storage.MockDB {
+	list := make(map[int]entities.User)
 	dt, _ := time.Parse(time.RFC3339, "1985-12-31T00:00:00Z")
-	list[0] = User{0, "John", "Doe", dt, "London"}
+	list[0] = entities.User{0, "John", "Doe", dt, "London"}
 	dt, _ = time.Parse(time.RFC3339, "1992-01-01T00:00:00Z")
-	list[1] = User{1, "Jane", "Doe", dt, "Milton Keynes"}
-	return &MockDB{list, 1}
+	list[1] = entities.User{1, "Jane", "Doe", dt, "Milton Keynes"}
+	return &storage.MockDB{list, 1}
 }
 
 // LoadFixturesIntoMockDatabase loads data from fixtures file into MockDB
-func LoadFixturesIntoMockDatabase(fixturesFile string) (*MockDB, error) {
-	var jsonObject map[string][]User
+func LoadFixturesIntoMockDatabase(fixturesFile string) (*storage.MockDB, error) {
+	var jsonObject map[string][]entities.User
 	file, err := ioutil.ReadFile(fixturesFile)
 	if err != nil {
 		return nil, stacktrace.Propagate(err, "error reading fixtures file")
@@ -70,10 +82,10 @@ func LoadFixturesIntoMockDatabase(fixturesFile string) (*MockDB, error) {
 	if err != nil {
 		return nil, stacktrace.Propagate(err, "error parsing fixtures file")
 	}
-	list := make(map[int]User)
+	list := make(map[int]entities.User)
 	list[0] = jsonObject["users"][0]
 	list[1] = jsonObject["users"][1]
-	return &MockDB{
+	return &storage.MockDB{
 		UserList:  list,
 		MaxUserID: 1,
 	}, nil

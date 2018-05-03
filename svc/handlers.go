@@ -1,4 +1,4 @@
-package main
+package svc
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/kostiamol/go-rest-api-template/entities"
 )
 
 // HandlerFunc is a custom implementation of the http.HandlerFunc
@@ -68,7 +69,7 @@ func GetUserHandler(w http.ResponseWriter, req *http.Request, ctx AppContext) {
 // CreateUserHandler adds a new user
 func CreateUserHandler(w http.ResponseWriter, req *http.Request, ctx AppContext) {
 	decoder := json.NewDecoder(req.Body)
-	var u User
+	var u entities.User
 	err := decoder.Decode(&u)
 	if err != nil {
 		response := Status{
@@ -79,7 +80,7 @@ func CreateUserHandler(w http.ResponseWriter, req *http.Request, ctx AppContext)
 		ctx.Render.JSON(w, http.StatusBadRequest, response)
 		return
 	}
-	user := User{-1, u.FirstName, u.LastName, u.DateOfBirth, u.LocationOfBirth}
+	user := entities.User{-1, u.FirstName, u.LastName, u.DateOfBirth, u.LocationOfBirth}
 	user, _ = ctx.DB.AddUser(user)
 	ctx.Render.JSON(w, http.StatusCreated, user)
 }
@@ -87,7 +88,7 @@ func CreateUserHandler(w http.ResponseWriter, req *http.Request, ctx AppContext)
 // UpdateUserHandler updates a user object
 func UpdateUserHandler(w http.ResponseWriter, req *http.Request, ctx AppContext) {
 	decoder := json.NewDecoder(req.Body)
-	var u User
+	var u entities.User
 	err := decoder.Decode(&u)
 	if err != nil {
 		response := Status{
@@ -98,7 +99,7 @@ func UpdateUserHandler(w http.ResponseWriter, req *http.Request, ctx AppContext)
 		ctx.Render.JSON(w, http.StatusBadRequest, response)
 		return
 	}
-	user := User{
+	user := entities.User{
 		ID:              u.ID,
 		FirstName:       u.FirstName,
 		LastName:        u.LastName,

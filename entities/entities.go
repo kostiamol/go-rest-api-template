@@ -1,6 +1,9 @@
-package main
+package entities
 
 import "time"
+
+// Local refers to local environment
+const Local string = "LOCAL"
 
 // Passport holds passport data
 type Passport struct {

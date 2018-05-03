@@ -1,21 +1,28 @@
-package main
+package storage
 
 import (
 	"testing"
 	"time"
 
+	"github.com/kostiamol/go-rest-api-template/entities"
+	"github.com/kostiamol/go-rest-api-template/svc"
 	"github.com/stretchr/testify/assert"
 )
 
+// TestDoStructsSatisfyInterface is a helper test function that just validates
+// whether our data structs are satisfying our Storer struct
+func TestDoStructsSatisfyInterface(t *testing.T) {
+	var _ Storer = (*MockDB)(nil)
+}
 func TestListUsers(t *testing.T) {
-	ctx := CreateContextForTestSetup()
+	ctx := svc.CreateContextForTestSetup()
 	list, _ := ctx.DB.ListUsers()
 	count := len(list)
 	assert.Equal(t, 2, count, "There should be 2 items in the list.")
 }
 
 func TestGetUserSuccess(t *testing.T) {
-	ctx := CreateContextForTestSetup()
+	ctx := svc.CreateContextForTestSetup()
 	dt, _ := time.Parse(time.RFC3339, "1985-12-31T00:00:00Z")
 	u, err := ctx.DB.GetUser(0)
 	if assert.Nil(t, err) {
@@ -28,15 +35,15 @@ func TestGetUserSuccess(t *testing.T) {
 }
 
 func TestGetUserFail(t *testing.T) {
-	ctx := CreateContextForTestSetup()
+	ctx := svc.CreateContextForTestSetup()
 	_, err := ctx.DB.GetUser(10)
 	assert.NotNil(t, err)
 }
 
 func TestAddUser(t *testing.T) {
-	ctx := CreateContextForTestSetup()
+	ctx := svc.CreateContextForTestSetup()
 	dt, _ := time.Parse(time.RFC3339, "1972-03-07T00:00:00Z")
-	u := User{
+	u := entities.User{
 		FirstName:       "Apple",
 		LastName:        "Jack",
 		DateOfBirth:     dt,
@@ -52,9 +59,9 @@ func TestAddUser(t *testing.T) {
 }
 
 func TestUpdateUserSuccess(t *testing.T) {
-	ctx := CreateContextForTestSetup()
+	ctx := svc.CreateContextForTestSetup()
 	dt, _ := time.Parse(time.RFC3339, "1985-12-31T00:00:00Z")
-	u := User{
+	u := entities.User{
 		ID:              0,
 		FirstName:       "John",
 		LastName:        "2 Doe",
@@ -73,9 +80,9 @@ func TestUpdateUserSuccess(t *testing.T) {
 }
 
 func TestUpdateUserFail(t *testing.T) {
-	ctx := CreateContextForTestSetup()
+	ctx := svc.CreateContextForTestSetup()
 	dt, _ := time.Parse(time.RFC3339, "1985-12-31T00:00:00Z")
-	u := User{
+	u := entities.User{
 		ID:              20,
 		FirstName:       "John",
 		LastName:        "2 Doe",
@@ -87,7 +94,7 @@ func TestUpdateUserFail(t *testing.T) {
 }
 
 func TestDeleteUserSuccess(t *testing.T) {
-	ctx := CreateContextForTestSetup()
+	ctx := svc.CreateContextForTestSetup()
 	err := ctx.DB.DeleteUser(1)
 	assert.Nil(t, err)
 }
