@@ -4,15 +4,13 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/kostiamol/go-rest-api-template/entities"
-
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/secure"
 )
 
-// StartServer Wraps the mux Router and uses the Negroni Middleware
-func StartServer(ctx AppContext) {
+// Run wraps the mux Router and uses the Negroni Middleware
+func Run(ctx Context) {
 	router := mux.NewRouter().StrictSlash(true)
 	for _, route := range routes {
 		var handler http.Handler
@@ -25,7 +23,7 @@ func StartServer(ctx AppContext) {
 	}
 	// security
 	var isDevelopment = false
-	if ctx.Env == entities.Local {
+	if ctx.Env == Local {
 		isDevelopment = true
 	}
 	secureMiddleware := secure.New(secure.Options{
@@ -39,8 +37,8 @@ func StartServer(ctx AppContext) {
 	n.Use(negroni.NewLogger())
 	n.Use(negroni.HandlerFunc(secureMiddleware.HandlerFuncWithNext))
 	n.UseHandler(router)
-	log.Println("===> Starting app (v" + ctx.Version + ") on port " + ctx.Port + " in " + ctx.Env + " mode.")
-	if ctx.Env == entities.Local {
+	log.Println("===> Starting service (v" + ctx.Version + ") on port " + ctx.Port + " in " + ctx.Env + " mode.")
+	if ctx.Env == Local {
 		n.Run("localhost:" + ctx.Port)
 	} else {
 		n.Run(":" + ctx.Port)

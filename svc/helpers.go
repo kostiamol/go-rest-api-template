@@ -1,18 +1,18 @@
 package svc
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/kostiamol/go-rest-api-template/entities"
-
 	"github.com/kostiamol/go-rest-api-template/storage"
 	"github.com/palantir/stacktrace"
 	"github.com/unrolled/render"
 )
+
+// Local refers to local environment
+const Local string = "LOCAL"
 
 // Storager defines all the database operations
 type Storager interface {
@@ -23,8 +23,8 @@ type Storager interface {
 	DeleteUser(i int) error
 }
 
-// AppContext holds application configuration data
-type AppContext struct {
+// Context holds application configuration data
+type Context struct {
 	Render  *render.Render
 	Version string
 	Env     string
@@ -32,63 +32,18 @@ type AppContext struct {
 	DB      Storager
 }
 
-// Healthcheck will store information about its name and version
-type Healthcheck struct {
-	AppName string `json:"appName"`
-	Version string `json:"version"`
-}
-
-// Status is a custom response object we pass around the system and send back to the customer
-// 404: Not found
-// 500: Internal Server Error
-type Status struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
-}
-
-// CreateContextForTestSetup initialises an application context struct
-// for testing purposes
-func CreateContextForTestSetup() AppContext {
+// NewContext initialises an application context struct for testing purposes
+func NewContext() Context {
 	testVersion := "0.0.0"
-	db := CreateMockDatabase()
-	ctx := AppContext{
+	db := storage.NewMockDB()
+	ctx := Context{
 		Render:  render.New(),
 		Version: testVersion,
-		Env:     entities.Local,
+		Env:     Local,
 		Port:    "3001",
 		DB:      db,
 	}
 	return ctx
-}
-
-// CreateMockDatabase initialises a database for test purposes
-func CreateMockDatabase() *storage.MockDB {
-	list := make(map[int]entities.User)
-	dt, _ := time.Parse(time.RFC3339, "1985-12-31T00:00:00Z")
-	list[0] = entities.User{0, "John", "Doe", dt, "London"}
-	dt, _ = time.Parse(time.RFC3339, "1992-01-01T00:00:00Z")
-	list[1] = entities.User{1, "Jane", "Doe", dt, "Milton Keynes"}
-	return &storage.MockDB{list, 1}
-}
-
-// LoadFixturesIntoMockDatabase loads data from fixtures file into MockDB
-func LoadFixturesIntoMockDatabase(fixturesFile string) (*storage.MockDB, error) {
-	var jsonObject map[string][]entities.User
-	file, err := ioutil.ReadFile(fixturesFile)
-	if err != nil {
-		return nil, stacktrace.Propagate(err, "error reading fixtures file")
-	}
-	err = json.Unmarshal(file, &jsonObject)
-	if err != nil {
-		return nil, stacktrace.Propagate(err, "error parsing fixtures file")
-	}
-	list := make(map[int]entities.User)
-	list[0] = jsonObject["users"][0]
-	list[1] = jsonObject["users"][1]
-	return &storage.MockDB{
-		UserList:  list,
-		MaxUserID: 1,
-	}, nil
 }
 
 // ParseVersionFile returns the version as a string, parsing and validating a file given the path

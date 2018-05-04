@@ -12,7 +12,7 @@ type Route struct {
 type Routes []Route
 
 var routes = Routes{
-	Route{"Healthcheck", "GET", "/healthcheck", HealthcheckHandler},
+	Route{"HealthCheck", "GET", "/healthCheck", HealthCheckHandler},
 	//=== USERS ===
 	Route{"ListUsers", "GET", "/users", ListUsersHandler},
 	Route{"GetUser", "GET", "/users/{uid:[0-9]+}", GetUserHandler},
