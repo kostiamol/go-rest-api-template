@@ -1,6 +1,6 @@
 # go-rest-api-template
 
-Template for building REST Web Services in Golang. Uses:
+Template for building REST Web Services in Golang with:
 
 * [gorilla/mux](http://www.gorillatoolkit.org/pkg/mux) for routing
 * [codegangsta/negroni](https://github.com/codegangsta/negroni) as a middleware handler
@@ -9,21 +9,19 @@ Template for building REST Web Services in Golang. Uses:
 * [palantir/stacktrace](https://github.com/palantir/stacktrace) to provide more context to error messages
 * [unrolled/secure](https://github.com/unrolled/secure) to improve API security
 
-### API Routes with Health check
+## API Routes with Health check
 
 ```
 Route{"Healthcheck", "GET", "/healthcheck", HealthcheckHandler},
 //=== USERS ===
-Route{"ListUsers", "GET", "/users", ListUsersHandler},
-Route{"GetUser", "GET", "/users/{uid:[0-9]+}", GetUserHandler},
+Route{"ListUsers",  "GET", "/users", ListUsersHandler},
+Route{"GetUser",    "GET", "/users/{uid:[0-9]+}", GetUserHandler},
 Route{"CreateUser", "POST", "/users", CreateUserHandler},
 Route{"UpdateUser", "PUT", "/users/{uid:[0-9]+}", UpdateUserHandler},
 Route{"DeleteUser", "DELETE", "/users/{uid:[0-9]+}", DeleteUserHandler},
 ```
 
 ## Testing
-
-### Manually testing your API routes with curl commands
 
 Retrieve a list of users:
 
@@ -37,7 +35,7 @@ Get a specific user:
 curl -X GET http://localhost:3009/users/0 | jq
 ```
 
-## Starting the app on a production server
+## Starting the service on a production server
 
 This is how you could run your app on a server:
 
