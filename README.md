@@ -21,7 +21,7 @@ The main ones are:
 * [palantir/stacktrace](https://github.com/palantir/stacktrace) to provide more context to error messages
 * [unrolled/secure](https://github.com/unrolled/secure) to improve API security
 
-### API Routes
+### API Routes with Health check
 
 ```
 Route{"Healthcheck", "GET", "/healthcheck", HealthcheckHandler},
@@ -32,30 +32,6 @@ Route{"CreateUser", "POST", "/users", CreateUserHandler},
 Route{"UpdateUser", "PUT", "/users/{uid:[0-9]+}", UpdateUserHandler},
 Route{"DeleteUser", "DELETE", "/users/{uid:[0-9]+}", DeleteUserHandler},
 ```
-
-In order to make our code more robust, I've added pattern matching in the routes.  This `[0-9]+` pattern says that we only accept digits from 0 to 9 and we can have one or more digits. Everything else will most likely trigger an HTTP 404 Not Found status code being returned to the client.
-
-### Special Route: Health check
-
-When you look at the overview of the handlers in `routes.go`, you will notice a special route:
-
-```
-Route{"Healthcheck", "GET", "/healthcheck", HealthcheckHandler},
-```
-
-Monitoring tools like [Sensu](https://sensuapp.org/) can call: `GET /healthcheck`. The health check route can return a 200 OK when the service is up and running and will also say what the application name is and the version number.
-
-```
-func HealthcheckHandler(w http.ResponseWriter, req *http.Request, ctx appContext) {
-	check := Healthcheck{
-		AppName: "go-rest-api-template",
-		Version: ctx.version,
-	}
-	ctx.render.JSON(w, http.StatusOK, check)
-}
-```
-
-This health check is very simple. It just checks whether the service is up and running, which can be useful in a build and deployment pipelines where you can check whether your newly deployed API is running (as part of a smoke test). More advanced health checks will also check whether it can reach the database, message queue or anything else you'd like to check. Trust me, your DevOps colleagues will be very grateful for this. (Don't forget to change your HTTP status code to 200 if you want to report on the various components that your health check is checking.)
 
 ## Testing
 
