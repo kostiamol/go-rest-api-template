@@ -1,0 +1,23 @@
+settings:
+  legacy:
+    force: false
+    interval: 100ms
+schema:
+- name: go-rest-api-template
+  path: ./cmd/go-rest-api-template
+  commands: 
+    build:
+      status: true
+      method: go build
+    run:
+      status: true
+      method: ./cmd/go-rest-api-template/go-rest-api-template
+  watcher:
+    extensions:
+    - go
+    paths:
+    - /
+    ignored_paths:
+    - .git
+    - .realize
+    - vendor
