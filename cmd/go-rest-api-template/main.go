@@ -21,8 +21,8 @@ func main() {
 		// running from localhost, so set some default values
 		env = svc.Local
 		port = "3001"
-		version = "VERSION"
-		fixtures = "fixtures.json"
+		version = "../../VERSION"
+		fixtures = "../../fixtures.json"
 	}
 	version, err := svc.ParseVersionFile(version)
 	if err != nil {
