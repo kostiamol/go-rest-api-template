@@ -2,6 +2,7 @@
 
 Template for building REST Web Services in Golang with:
 
+* [go-swagger](https://github.com/go-swagger/go-swagger) for representation of RESTful API
 * [gorilla/mux](http://www.gorillatoolkit.org/pkg/mux) for routing
 * [codegangsta/negroni](https://github.com/codegangsta/negroni) as a middleware handler
 * [strechr/testify](https://github.com/stretchr/testify) for writing easier test assertions
