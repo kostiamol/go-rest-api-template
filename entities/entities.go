@@ -14,10 +14,16 @@ type Passport struct {
 }
 
 // User holds personal user information
+// swagger:response user
 type User struct {
-	ID              int       `json:"id"`
-	FirstName       string    `json:"firstName"`
-	LastName        string    `json:"lastName"`
-	DateOfBirth     time.Time `json:"dateOfBirth"`
-	LocationOfBirth string    `json:"locationOfBirth"`
+	// UID
+	ID int `json:"id"`
+	// First name
+	FirstName string `json:"firstName"`
+	// Last name
+	LastName string `json:"lastName"`
+	// Date of birth
+	DateOfBirth time.Time `json:"dateOfBirth"`
+	// Location of birth
+	LocationOfBirth string `json:"locationOfBirth"`
 }

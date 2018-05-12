@@ -1,0 +1,147 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "description": "Checks whether the service is up and running.",
+        "tags": [
+          "service"
+        ],
+        "summary": "Shows the service status.",
+        "operationId": "healthcheck",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/healthcheck"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "This will show all available users.",
+        "tags": [
+          "users"
+        ],
+        "summary": "Lists users.",
+        "operationId": "listUsers",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/users"
+          },
+          "404": {
+            "$ref": "#/responses/status"
+          }
+        }
+      },
+      "put": {
+        "description": "This will update the user.",
+        "tags": [
+          "users"
+        ],
+        "summary": "Updates the user.",
+        "operationId": "updateUser",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/user"
+          },
+          "400": {
+            "$ref": "#/responses/status"
+          },
+          "500": {
+            "$ref": "#/responses/status"
+          }
+        }
+      },
+      "post": {
+        "description": "This will create the user.",
+        "tags": [
+          "users"
+        ],
+        "summary": "Creates the user.",
+        "operationId": "createUser",
+        "responses": {
+          "201": {
+            "$ref": "#/responses/user"
+          },
+          "400": {
+            "$ref": "#/responses/status"
+          }
+        }
+      },
+      "delete": {
+        "description": "This will delete the user.",
+        "tags": [
+          "users"
+        ],
+        "summary": "Deletes the user.",
+        "operationId": "deleteUser",
+        "responses": {
+          "204": {
+            "$ref": "#/responses/status"
+          },
+          "500": {
+            "$ref": "#/responses/status"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "healthcheck": {
+      "description": "healthcheck stores information about service' name and version",
+      "headers": {
+        "svcName": {
+          "type": "string",
+          "description": "Service name"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version"
+        }
+      }
+    },
+    "status": {
+      "description": "Status is used to produce different types of statuses with the same structure",
+      "headers": {
+        "message": {
+          "type": "string",
+          "description": "The status message"
+        },
+        "status": {
+          "type": "string",
+          "description": "HTTP status code"
+        }
+      }
+    },
+    "user": {
+      "description": "User holds personal user information",
+      "headers": {
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date of birth"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "UID"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name"
+        },
+        "locationOfBirth": {
+          "type": "string",
+          "description": "Location of birth"
+        }
+      }
+    },
+    "users": {
+      "description": "users holds the map with the list of users and their quantity"
+    }
+  }
+}

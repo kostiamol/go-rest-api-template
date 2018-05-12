@@ -10,17 +10,21 @@ import (
 	"github.com/kostiamol/go-rest-api-template/entities"
 )
 
-// HealthCheck will store information about its name and version
-type HealthCheck struct {
+// healthcheck stores information about service' name and version
+// swagger:response healthcheck
+type healthcheck struct {
+	// Service name
 	SvcName string `json:"svcName"`
+	// Version
 	Version string `json:"version"`
 }
 
-// Status is a custom response object we pass around the system and send back to the customer
-// 404: Not found
-// 500: Internal Server Error
-type Status struct {
-	Status  string `json:"status"`
+// Status is used to produce different types of statuses with the same structure
+// swagger:response status
+type status struct {
+	// HTTP status code
+	Status string `json:"status"`
+	// The status message
 	Message string `json:"message"`
 }
 
@@ -38,18 +42,41 @@ func makeHandler(ctx Context, fn func(http.ResponseWriter, *http.Request, Contex
 
 // HealthCheckHandler returns useful info about the app
 func HealthCheckHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
-	check := HealthCheck{
+	// swagger:route GET /healthcheck service healthcheck
+	//
+	// Shows the service status.
+	//
+	// Checks whether the service is up and running.
+	//
+	//     Responses:
+	//       200: healthcheck
+
+	check := healthcheck{
 		SvcName: "go-rest-api-template",
 		Version: ctx.Version,
 	}
 	ctx.Render.JSON(w, http.StatusOK, check)
 }
 
+// users holds the map with the list of users and their quantity
+// swagger:response users
+type users map[string]interface{}
+
 // ListUsersHandler returns a list of users
 func ListUsersHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
+	// swagger:route GET /users users listUsers
+	//
+	// Lists users.
+	//
+	// This will show all available users.
+	//
+	//     Responses:
+	//       200: users
+	//       404: status
+
 	list, err := ctx.DB.ListUsers()
 	if err != nil {
-		response := Status{
+		response := status{
 			Status:  "404",
 			Message: "can't find any users",
 		}
@@ -57,7 +84,8 @@ func ListUsersHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
 		ctx.Render.JSON(w, http.StatusNotFound, response)
 		return
 	}
-	responseObject := make(map[string]interface{})
+	// responseObject := make(map[string]interface{})
+	responseObject := users(make(map[string]interface{}))
 	responseObject["users"] = list
 	responseObject["count"] = len(list)
 	ctx.Render.JSON(w, http.StatusOK, responseObject)
@@ -65,11 +93,21 @@ func ListUsersHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
 
 // GetUserHandler returns a user object
 func GetUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
+	// swagger:route GET /users/{uid:[0-9]+} users listUsers
+	//
+	// Shows the user by uid.
+	//
+	// This will show the user with the specified uid.
+	//
+	//     Responses:
+	//       200: user
+	//       404: status
+
 	vars := mux.Vars(req)
 	uid, _ := strconv.Atoi(vars["uid"])
 	user, err := ctx.DB.GetUser(uid)
 	if err != nil {
-		response := Status{
+		response := status{
 			Status:  "404",
 			Message: "can't find user",
 		}
@@ -82,11 +120,21 @@ func GetUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
 
 // CreateUserHandler adds a new user
 func CreateUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
+	// swagger:route POST /users users createUser
+	//
+	// Creates the user.
+	//
+	// This will create the user.
+	//
+	//     Responses:
+	//       201: user
+	//       400: status
+
 	decoder := json.NewDecoder(req.Body)
 	var u entities.User
 	err := decoder.Decode(&u)
 	if err != nil {
-		response := Status{
+		response := status{
 			Status:  "400",
 			Message: "malformed user object",
 		}
@@ -107,11 +155,22 @@ func CreateUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
 
 // UpdateUserHandler updates a user object
 func UpdateUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
+	// swagger:route PUT /users users updateUser
+	//
+	// Updates the user.
+	//
+	// This will update the user.
+	//
+	//     Responses:
+	//       200: user
+	//       400: status
+	//		 500: status
+
 	decoder := json.NewDecoder(req.Body)
 	var u entities.User
 	err := decoder.Decode(&u)
 	if err != nil {
-		response := Status{
+		response := status{
 			Status:  "400",
 			Message: "malformed user object",
 		}
@@ -128,7 +187,7 @@ func UpdateUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
 	}
 	user, err = ctx.DB.UpdateUser(user)
 	if err != nil {
-		response := Status{
+		response := status{
 			Status:  "500",
 			Message: "something went wrong",
 		}
@@ -141,11 +200,21 @@ func UpdateUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
 
 // DeleteUserHandler deletes a user
 func DeleteUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
+	// swagger:route DELETE /users users deleteUser
+	//
+	// Deletes the user.
+	//
+	// This will delete the user.
+	//
+	//     Responses:
+	//       204: status
+	//		 500: status
+
 	vars := mux.Vars(req)
 	uid, _ := strconv.Atoi(vars["uid"])
 	err := ctx.DB.DeleteUser(uid)
 	if err != nil {
-		response := Status{
+		response := status{
 			Status:  "500",
 			Message: "something went wrong",
 		}
@@ -153,7 +222,7 @@ func DeleteUserHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
 		ctx.Render.JSON(w, http.StatusInternalServerError, response)
 		return
 	}
-	ctx.Render.Text(w, http.StatusNoContent, "")
+	ctx.Render.JSON(w, http.StatusNoContent, status{})
 }
 
 // PassportsHandler not implemented yet
