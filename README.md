@@ -28,8 +28,8 @@ Route{"DeleteUser", "DELETE", "/users/{uid:[0-9]+}", DeleteUserHandler},
 Execute the following in the directory with the main.go and it will parse all the files that are reachable by that main package to produce a swagger specification and serve it with SwaggerUI:
 
 ```
-swagger generate spec -o ./swagger.json --scan-models
-swagger serve -F=swagger swagger.json
+swagger generate spec -o ../../swagger.json --scan-models
+swagger serve -F=swagger ../../swagger.json
 ```
 
 ## Testing
