@@ -2,12 +2,14 @@
 
 Template for building REST Web Services in Golang with:
 
+* [go-swagger](https://github.com/go-swagger/go-swagger) for representation of RESTful API
 * [gorilla/mux](http://www.gorillatoolkit.org/pkg/mux) for routing
 * [codegangsta/negroni](https://github.com/codegangsta/negroni) as a middleware handler
 * [strechr/testify](https://github.com/stretchr/testify) for writing easier test assertions
 * [unrolled/render](https://github.com/unrolled/render) for HTTP response rendering
 * [palantir/stacktrace](https://github.com/palantir/stacktrace) to provide more context to error messages
 * [unrolled/secure](https://github.com/unrolled/secure) to improve API security
+* [oxeque/realize](https://github.com/oxequa/realize) to watch for changes in files during development
 
 ## API Routes with Health check
 
@@ -19,6 +21,15 @@ Route{"GetUser",    "GET", "/users/{uid:[0-9]+}", GetUserHandler},
 Route{"CreateUser", "POST", "/users", CreateUserHandler},
 Route{"UpdateUser", "PUT", "/users/{uid:[0-9]+}", UpdateUserHandler},
 Route{"DeleteUser", "DELETE", "/users/{uid:[0-9]+}", DeleteUserHandler},
+```
+
+## API specification
+
+Execute the following in the directory with the main.go and it will parse all the files that are reachable by that main package to produce a swagger specification and serve it with SwaggerUI:
+
+```
+swagger generate spec -o ../../swagger.json --scan-models
+swagger serve -F=swagger ../../swagger.json
 ```
 
 ## Testing
