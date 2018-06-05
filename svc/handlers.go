@@ -10,9 +10,9 @@ import (
 	"github.com/kostiamol/go-rest-api-template/entities"
 )
 
-// healthcheck stores information about service' name and version
-// swagger:response healthcheck
-type healthcheck struct {
+// health stores information about service' name and version
+// swagger:response health
+type health struct {
 	// Service name
 	SvcName string `json:"svcName"`
 	// Version
@@ -40,18 +40,18 @@ func makeHandler(ctx Context, fn func(http.ResponseWriter, *http.Request, Contex
 	}
 }
 
-// HealthCheckHandler returns useful info about the app
-func HealthCheckHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
-	// swagger:route GET /healthcheck service healthcheck
+// HealthHandler returns useful info about the app
+func HealthHandler(w http.ResponseWriter, req *http.Request, ctx Context) {
+	// swagger:route GET /health service health
 	//
 	// Shows the service status.
 	//
 	// Checks whether the service is up and running.
 	//
 	//     Responses:
-	//       200: healthcheck
+	//       200: health
 
-	check := healthcheck{
+	check := health {
 		SvcName: "go-rest-api-template",
 		Version: ctx.Version,
 	}

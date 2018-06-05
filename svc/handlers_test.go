@@ -10,11 +10,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHealthCheckHandler(t *testing.T) {
+func TestHealthHandler(t *testing.T) {
 	ctx := NewContext()
-	r, _ := http.NewRequest("GET", "/healthCheck", nil)
+	r, _ := http.NewRequest("GET", "/health", nil)
 	w := httptest.NewRecorder()
-	makeHandler(ctx, HealthCheckHandler).ServeHTTP(w, r)
+	makeHandler(ctx, HealthHandler).ServeHTTP(w, r)
 	assert.Equal(t, http.StatusOK, w.Code, "they should be equal")
 	assert.Equal(t, "application/json; charset=UTF-8", w.HeaderMap["Content-Type"][0], "they should be equal")
 	// parse json body
