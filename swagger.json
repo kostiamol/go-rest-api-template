@@ -1,17 +1,17 @@
 {
   "swagger": "2.0",
   "paths": {
-    "/healthcheck": {
+    "/health": {
       "get": {
         "description": "Checks whether the service is up and running.",
         "tags": [
           "service"
         ],
         "summary": "Shows the service status.",
-        "operationId": "healthcheck",
+        "operationId": "health",
         "responses": {
           "200": {
-            "$ref": "#/responses/healthcheck"
+            "$ref": "#/responses/health"
           }
         }
       }
@@ -87,8 +87,8 @@
     }
   },
   "responses": {
-    "healthcheck": {
-      "description": "healthcheck stores information about service' name and version",
+    "health": {
+      "description": "health stores information about service' name and version",
       "headers": {
         "svcName": {
           "type": "string",
