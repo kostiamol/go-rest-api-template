@@ -12,7 +12,10 @@ import (
 )
 
 // Local refers to local environment
-const Local string = "LOCAL"
+const (
+	Local string = "LOCAL"
+	Prod  string = "PROD"
+)
 
 // Storager defines all the database operations
 type Storager interface {

@@ -12,17 +12,21 @@ import (
 
 func main() {
 	var (
-		env      = os.Getenv("ENV")      // LOCAL, DEV, STG, PRD
+		env      = os.Getenv("ENV")      // LOCAL, DEV, STAGE, PROD
 		port     = os.Getenv("PORT")     // server traffic on this port
 		version  = os.Getenv("VERSION")  // path to VERSION file
 		fixtures = os.Getenv("FIXTURES") // path to fixtures file
 	)
 	if env == "" || env == svc.Local {
-		// running from localhost, so set some default values
 		env = svc.Local
 		port = "3001"
 		version = "../../VERSION"
 		fixtures = "../../fixtures.json"
+	} else if env == svc.Prod {
+		env = svc.Prod
+		port = "8080"
+		version = "./rsc/VERSION"
+		fixtures = "./rsc/fixtures.json"
 	}
 	version, err := svc.ParseVersionFile(version)
 	if err != nil {
