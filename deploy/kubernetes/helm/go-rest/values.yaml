@@ -5,19 +5,20 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: stable
+  repository: registry1-docker-io.repo.lab.pl.alcatel-lucent.com/kostiamol/go_rest
+  tag: latest
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
 
 ingress:
   enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+  annotations: 
+    kubernetes.io/ingress.class: "nginx" //Each ingress pod must be annotated with the appropriate class
+    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
   path: /
   hosts:
     - chart-example.local
