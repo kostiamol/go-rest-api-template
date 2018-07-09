@@ -13,6 +13,7 @@ type Routes []Route
 
 var routes = Routes{
 	Route{"Health", "GET", "/health", HealthHandler},
+	Route{"ListUsers", "GET", "/", ListUsersHandler},
 	Route{"ListUsers", "GET", "/users", ListUsersHandler},
 	Route{"GetUser", "GET", "/users/{uid:[0-9]+}", GetUserHandler},
 	Route{"CreateUser", "POST", "/users", CreateUserHandler},
